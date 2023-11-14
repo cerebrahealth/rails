@@ -67,7 +67,10 @@ module ActiveRecord
       unless ActiveSupport::Logger.logger_outputs_to?(Rails.logger, STDERR, STDOUT)
         console = ActiveSupport::Logger.new(STDERR)
         console.level = Rails.logger.level
-        Rails.logger.broadcast_to(console)
+        # This line is broke when upgrading to rails 7.1.1 with google cloud logging 2.3.3.  if either one has an update we can try it again
+        # Rails.logger.broadcast_to(console)
+        # this is the line from rails 7.0
+        Rails.logger.extend ActiveSupport::Logger.broadcast console
       end
       ActiveRecord.verbose_query_logs = false
     end
